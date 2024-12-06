@@ -1,0 +1,21 @@
+---
+title: "Mitchell's transcriptome, DNAm, qPCR protocols"
+author: "Nghia Nguyen (Mitchell)"
+date: "`r Sys.Date()`"
+output: bookdown::gitbook
+documentclass: book
+geometry: margin=2cm
+biblio-style: apalike
+link-citations: yes
+---
+
+# Preface
+
+My transcriptome protocol walk-through. Hopefully by the end you would understand how I did this too!
+
+# Table of Contents:
+
+- Project setup: How the project directories are set up in a managed order.
+- Transcriptome analysis: From transcript counts to functional results.
+- DNAm analysis: From Illumina MethylationEPICv1 array data to functional results.
+- qPCR: From QuantStudio Excel files to differential expression results.

@@ -1,0 +1,330 @@
+# Project setup
+
+Consider the following when setting up your R project:
+
+- How will I install and access R?
+- What packages will I use? Where are they distributed from - R CRAN or Bioconductor?
+- How will I make sure that my code can be run perfectly on another computer and used in other projects?
+- Where will my input and output files be?
+
+My method for setting up and organising a project is my answer to these questions.
+
+## Download and install R and an IDE
+### Download R
+Go to [https://cran.r-project.org/](https://cran.r-project.org/) to download and install R. 
+
+### Download an integrated development environment (IDE)
+IDEs speed up your coding process - it helps highlight syntax, errors, allows you to run code more interactively, etc. The most recommended IDE for R is RStudio, although I used Visual Studio Code for its higher customisability.
+
+[Download RStudio (recommended)](https://posit.co/download/rstudio-desktop/)
+
+[Download Visual Studio Code (not recommended)](https://code.visualstudio.com/) then add R support [following the official docs](https://code.visualstudio.com/docs/languages/r)
+
+## Package loading
+Load all necessary packages at the start of your project. You can use a package manager (I use `pacman`) to simplify the process. Some of the packages I use are distributed via Bioconductor, hence that package manager is loaded as well.
+
+### Load package managers
+```{r, message = FALSE}
+# Load package manager pacman, install if not available on machine
+if (!requireNamespace("pacman")) {
+    install.packages("pacman")
+}
+
+library(pacman)
+
+# Load Bioconductor package manager, install if not available on machine
+if (!require("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+library(BiocManager)
+```
+
+### Load packages (R CRAN)
+To load CRAN packages, provide them as a list to the `pacman::p_load()` command.
+
+```{r, message = FALSE}
+# For transcriptome analysis
+p_load(
+    tibble,
+    metan,
+    tidyverse,
+    magrittr,
+    ggrepel,
+    ggpubr,
+    rstatix,
+    ggalt,
+    ggplotify,
+    cowplot,
+    gridExtra,
+    statmod,
+    volcano3D,
+    msigdbr,
+    viridis,
+    palettetown,
+    seriation,
+    circlize,
+    magick,
+    cluster,
+    rmdformats,
+    shinybusy,
+    WGCNA,
+    data.table,
+    DT,
+    UpSetR,
+    reactable,
+    here,
+    ashr,
+    openxlsx,
+    ggsignif,
+    patchwork
+)
+
+# For DNA methylation analysis
+p_load(
+    RColorBrewer,
+    tidyverse,
+    ggrepel,
+    ggpubr,
+    ggalt,
+    ggplotify,
+    cowplot,
+    gridExtra,
+    statmod,
+    writexl,
+    cowplot,
+    viridis,
+    circlize,
+    magick,
+    cluster,
+    rmdformats,
+    future,
+    shinybusy,
+    data.table,
+    DT,
+    matrixStats,
+    biganalytics,
+    openxlsx,
+    magrittr,
+    ggVennDiagram,
+    vctrs,
+    furrr,
+    here,
+    patchwork,
+    fastcluster,
+    gprofiler2,
+    figpatch
+)
+
+# For qPCR analysis
+p_load(
+    tidyverse,
+    magrittr,
+    cowplot,
+    viridis,
+    palettetown,
+    seriation,
+    plotrix,
+    openxlsx,
+    extrafont,
+    ggpubr,
+    plotly,
+    ggplotify,
+    data.table,
+    DT,
+    reactable,
+    here,
+    rlang
+)
+```
+
+### Load packages (Bioconductor)
+Create a list of all Bioconductor packages and supply them to the package manager.
+
+#### Transcriptome analysis
+```{r, message = FALSE}
+# List transcriptome packges
+list_bioc_pkg <- c(
+    "BiocHubsShiny",
+    "AnnotationHub",
+    "edgeR",
+    "Homo.sapiens",
+    "limma",
+    "Glimma",
+    "ComplexHeatmap",
+    "tximeta",
+    "SummarizedExperiment",
+    "PCAtools",
+    "sva",
+    "ensembldb",
+    "GSVA",
+    "AnnotationDbi",
+    "topGO",
+    "pathview",
+    "gage",
+    "globaltest",
+    "safe",
+    "org.Hs.eg.db",
+    "clusterProfiler",
+    "ReactomePA",
+    "reactome.db",
+    "enrichplot",
+    "GSEABase",
+    "BiocStyle",
+    "HDO.db",
+    "DESeq2",
+    "pcaExplorer",
+    "IHW",
+    "RUVSeq",
+    "EnhancedVolcano",
+    "impute"
+)
+# Install Bioconductor packages, if they are not yet installed
+# Swap update = TRUE / FALSE depending on need to update pkg
+BiocManager::install(
+    pkgs = list_bioc_pkg,
+    update = FALSE
+)
+
+# Load Bioconductor packages
+invisible(lapply(list_bioc_pkg, function(x) {
+    library(x, character.only = TRUE)
+}))
+```
+
+#### DNAm analysis
+```{r, message = FALSE}
+# List Bioconductor packages to load/install
+list_bioc_pkg <- c(
+    "BiocHubsShiny",
+    "AnnotationHub",
+    "limma",
+    "Glimma",
+    "edgeR",
+    "ComplexHeatmap",
+    "SummarizedExperiment",
+    "PCAtools",
+    "AnnotationDbi",
+    "org.Hs.eg.db",
+    "enrichplot",
+    "GSEABase",
+    "BiocStyle",
+    "HDO.db",
+    "pcaExplorer",
+    "IHW",
+    "EnhancedVolcano",
+    "BiocFileCache",
+    "ensembldb",
+    "RColorBrewer",
+    "circlize"
+)
+
+# Install Bioconductor packages, if they are not yet installed
+# Swap update = TRUE / FALSE depending on need to update pkg
+BiocManager::install(
+    pkgs = list_bioc_pkg,
+    update = FALSE
+)
+
+# Load Bioconductor packages
+invisible(lapply(list_bioc_pkg, function(x) {
+    library(x, character.only = TRUE)
+}))
+```
+
+#### qPCR analysis
+```{r, message = FALSE}
+# List Bioconductor packages to load/install
+list_bioc_pkg <- c(
+    "BiocHubsShiny",
+    "AnnotationHub",
+    "limma",
+    "Glimma",
+    "edgeR",
+    "ComplexHeatmap",
+    "SummarizedExperiment",
+    "PCAtools",
+    "AnnotationDbi",
+    "org.Hs.eg.db",
+    "enrichplot",
+    "GSEABase",
+    "BiocStyle",
+    "HDO.db",
+    "pcaExplorer",
+    "IHW",
+    "EnhancedVolcano",
+    "BiocFileCache",
+    "ensembldb",
+    "RColorBrewer",
+    "circlize"
+)
+
+# Install Bioconductor packages, if they are not yet installed
+# Swap update = TRUE / FALSE depending on need to update pkg
+BiocManager::install(
+    pkgs = list_bioc_pkg,
+    update = FALSE
+)
+
+# Load Bioconductor packages
+invisible(lapply(list_bioc_pkg, function(x) {
+    library(x, character.only = TRUE)
+}))
+```
+
+## Making sure code works on other machines
+
+Create a directory containing all scripts and data relevant to the project, and ensure that **EVERYTHING** needed for the project is inside the folder.
+
+For example, instead of having to refer to this chapter's source using the absolute directory, such as below:
+
+```{r}
+# Refer to file using absolute directory (will break if code is placed anywhere else)
+file.path("D:/MPhil/protocol_omics/1_protocol_project_setup.Rmd")
+```
+
+As long as all files falls under the folder, you can refer to it using their relative directory:
+```{r}
+# Refer to file using relative directory
+file.path("1_protocol_project_setup.Rmd")
+```
+
+The absolute directory will change if you move the source to another folder, change mappings to network drives, use Mac vs. Windows, etc. The relative directory will only change if you rename or move the source code files.
+
+## Organising the project folder
+
+To start, create 3 folders inside your project:
+
+- input: Where all input files go.
+- output: Where all output files of analysis go.
+- scripts: Where all analysis scripts go.
+
+For me, the only files falling outside of these are Rmarkdown files used to create reports and web documents.
+
+## Extras: Project initialisation
+The method for initialising a project between the 2 main IDEs for R: RStudio and Visual Studio Code. If you are starting out - use RStudio.
+
+### Initialise a project in RStudio:
+
+In RStudio:
+
+- Select File -> New Project...
+- In the pop-up window, select New Directory -> New Project, then select Directory name and location.
+- - If the code is available on a git repository (GitHub), select Version Control -> Git, then paste the link from GitHub.
+
+The project is now ready. In the future, when working on the project, start via the `.Rproj` file.
+
+More info: [https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects)
+
+### Initialise a project in VSCode
+Create an empty folder for your project.
+
+In VSCode:
+
+- Select File -> Open Folder...
+- Select the created empty folder
+
+The project is now ready. In the future, when working on the project, start by opening the same folder in File -> Open Folder.
+
+## Conclusion
+The project is now ready!
