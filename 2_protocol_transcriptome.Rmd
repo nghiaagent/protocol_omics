@@ -1,0 +1,14 @@
+# Transcriptome analysis
+
+## Summary
+
+The main steps to analysing transcriptome data are:
+
+- Import counts
+- - These counts are usually counts of transcripts and need to be converted to gene counts.
+- Filtering
+- - Filter lowly expressed genes to speed up analysis
+- Exploratory data analysis
+- - Use heatmaps and PCA plots to explore batch effect within the data and consider them throughout analysis.
+- Batch effect correction (optional)
+- - Apply ComBat-seq or equivalent to produce batch-corrected gene counts
